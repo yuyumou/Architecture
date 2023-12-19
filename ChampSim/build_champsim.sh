@@ -23,9 +23,9 @@ NORMAL=$(tput sgr0)
 ############## Default configuration ############
 BRANCH=perceptron
 L1D_PREFETCHER=no
-L2C_PREFETCHER=no 
+L2C_PREFETCHER=ip_stride
 LLC_PREFETCHER=no
-LLC_REPLACEMENT=srrip
+LLC_REPLACEMENT=lru
 NUM_CORE=1
 #################################################
 
