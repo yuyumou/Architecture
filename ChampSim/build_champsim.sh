@@ -23,9 +23,11 @@ NORMAL=$(tput sgr0)
 ############## Default configuration ############
 BRANCH=perceptron
 L1D_PREFETCHER=no
-L2C_PREFETCHER=ip_stride
+L2C_PREFETCHER=no
 LLC_PREFETCHER=next_line
-LLC_REPLACEMENT=srrip
+L1D_REPLACEMENT=lru
+L2C_REPLACEMENT=lru
+LLC_REPLACEMENT=lru
 NUM_CORE=1
 #################################################
 
@@ -55,6 +57,20 @@ if [ ! -f ./prefetcher/${LLC_PREFETCHER}.llc_pref ]; then
     echo "[ERROR] Cannot find LLC prefetcher"
 	echo "[ERROR] Possible LLC prefetchers from prefetcher/*.llc_pref "
     find prefetcher -name "*.llc_pref"
+    exit 1
+fi
+
+if [ ! -f ./replacement/${L1D_REPLACEMENT}.l1d_repl ]; then
+    echo "[ERROR] Cannot find L1D replacement policy"
+        echo "[ERROR] Possible L1D replacement policy from replacement/*.l1d_repl"
+    find replacement -name "*.l1d_repl"
+    exit 1
+fi
+
+if [ ! -f ./replacement/${L2C_REPLACEMENT}.l2c_repl ]; then
+    echo "[ERROR] Cannot find L2C replacement policy"
+	echo "[ERROR] Possible L2C replacement policy from replacement/*.l2c_repl"
+    find replacement -name "*.l2c_repl"
     exit 1
 fi
 
@@ -93,6 +109,8 @@ cp branch/${BRANCH}.bpred branch/branch_predictor.cc
 cp prefetcher/${L1D_PREFETCHER}.l1d_pref prefetcher/l1d_prefetcher.cc
 cp prefetcher/${L2C_PREFETCHER}.l2c_pref prefetcher/l2c_prefetcher.cc
 cp prefetcher/${LLC_PREFETCHER}.llc_pref prefetcher/llc_prefetcher.cc
+cp replacement/${L1D_REPLACEMENT}.l1d_repl replacement/l1d_replacement.cc
+cp replacement/${L2C_REPLACEMENT}.l2c_repl replacement/l2c_replacement.cc
 cp replacement/${LLC_REPLACEMENT}.llc_repl replacement/llc_replacement.cc
 
 # Build
@@ -114,9 +132,11 @@ echo "Branch Predictor: ${BRANCH}"
 echo "L1D Prefetcher: ${L1D_PREFETCHER}"
 echo "L2C Prefetcher: ${L2C_PREFETCHER}"
 echo "LLC Prefetcher: ${LLC_PREFETCHER}"
+echo "L1D Replacement: ${L1D_REPLACEMENT}"
+echo "L2C Replacement: ${L2C_REPLACEMENT}"
 echo "LLC Replacement: ${LLC_REPLACEMENT}"
 echo "Cores: ${NUM_CORE}"
-BINARY_NAME="${BRANCH}-${L1D_PREFETCHER}-${L2C_PREFETCHER}-${LLC_PREFETCHER}-${LLC_REPLACEMENT}-${NUM_CORE}core"
+BINARY_NAME="${BRANCH}-${L1D_PREFETCHER}-${L2C_PREFETCHER}-${LLC_PREFETCHER}-${L1D_REPLACEMENT}-${L2C_REPLACEMENT}-${LLC_REPLACEMENT}-${NUM_CORE}core"
 echo "Binary: bin/${BINARY_NAME}"
 echo ""
 mv bin/champsim bin/${BINARY_NAME}
@@ -131,4 +151,6 @@ cp branch/bimodal.bpred branch/branch_predictor.cc
 cp prefetcher/no.l1d_pref prefetcher/l1d_prefetcher.cc
 cp prefetcher/no.l2c_pref prefetcher/l2c_prefetcher.cc
 cp prefetcher/no.llc_pref prefetcher/llc_prefetcher.cc
+cp replacement/lru.l1d_repl replacement/l1d_replacement.cc
+cp replacement/lru.l2c_repl replacement/l2c_replacement.cc
 cp replacement/lru.llc_repl replacement/llc_replacement.cc
