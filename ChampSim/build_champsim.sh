@@ -24,10 +24,10 @@ NORMAL=$(tput sgr0)
 BRANCH=perceptron
 L1D_PREFETCHER=no
 L2C_PREFETCHER=ip_stride
-LLC_PREFETCHER=spp
+LLC_PREFETCHER=domino
 L1D_REPLACEMENT=lru
 L2C_REPLACEMENT=lru
-LLC_REPLACEMENT=hawkeye
+LLC_REPLACEMENT=my
 NUM_CORE=1
 #################################################
 
